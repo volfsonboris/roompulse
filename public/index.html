@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f8fa">
+    <title>RoomPulse | Presentation Feedback</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="RoomPulse home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>RoomPulse<span class="brand-divider">/</span><span class="brand-subtitle">Presentation feedback</span></a>
+      <span class="header-note"><span class="tiny-dot"></span>A little signal. A better talk.</span>
+    </header>
+    <main>
+      <div id="global-error" class="notice error" role="alert" hidden></div>
+      <noscript><p class="notice error">JavaScript is required to send feedback and see live updates. Please enable it and reload.</p></noscript>
+
+      <section id="home-view" class="view home-layout" hidden>
+        <div class="home-copy">
+          <p class="eyebrow"><span class="tiny-dot"></span>STAY CONNECTED TO YOUR AUDIENCE</p>
+          <h1>Read the room.<br><span>Not their minds.</span></h1>
+          <p class="lede">Give everyone a simple way to say how it's going. Get a live pulse on your presentation, without interrupting the flow.</p>
+          <div class="signal-preview">
+            <div><span class="signal-icon green-icon" aria-hidden="true">&#10003;</span><span><strong>All clear</strong><small>Keep the good stuff coming.</small></span></div>
+            <div><span class="signal-icon yellow-icon" aria-hidden="true">?</span><span><strong>A little more detail</strong><small>Let's spend another moment here.</small></span></div>
+            <div><span class="signal-icon red-icon" aria-hidden="true">!</span><span><strong>I'm a bit lost</strong><small>A different explanation could help.</small></span></div>
+          </div>
+          <p class="privacy-line"><span aria-hidden="true">&#9671;</span> No audience accounts. No names. Just honest feedback.</p>
+        </div>
+        <div class="setup-column">
+          <section class="panel setup-panel" aria-labelledby="create-heading">
+            <span class="section-tag">FOR PRESENTERS</span>
+            <h2 id="create-heading">Start a conversation.</h2>
+            <p>Create a room, share your link, and let your audience do the signaling.</p>
+            <form id="create-form">
+              <label for="session-title">What are you presenting?</label>
+              <input id="session-title" name="title" maxlength="100" placeholder="e.g. A fresh look at our product roadmap" required autocomplete="off">
+              <button id="create-button" class="button primary full-width" type="submit">Create presentation <span aria-hidden="true">&#8594;</span></button>
+              <p id="create-error" class="inline-error" role="alert"></p>
+            </form>
+            <div class="setup-footnote"><span aria-hidden="true">&#10003;</span> Your own private dashboard &amp; a shareable audience link.</div>
+          </section>
+          <div class="how-it-works"><span>01 <strong>Create a room</strong></span><span>02 <strong>Share the link</strong></span><span>03 <strong>Feel the pulse</strong></span></div>
+          <p class="audience-hint">Here to give feedback? Open the link your presenter shared.</p>
+        </div>
+      </section>
+
+      <section id="presenter-view" class="view" hidden>
+        <div class="page-heading">
+          <div><p class="eyebrow">PRESENTER DASHBOARD</p><h1 id="presenter-title" class="page-title">Your presentation</h1><p class="subtitle">A live look at how your message is landing.</p></div>
+          <div class="heading-actions"><span id="connection" class="status-pill" role="status"><span class="tiny-dot"></span><span id="connection-text">Connecting</span></span><button id="end-button" class="button quiet" type="button">End session</button></div>
+        </div>
+        <section class="share-bar" aria-label="Share with your audience">
+          <div class="share-copy"><span class="share-symbol" aria-hidden="true">&#8599;</span><div><strong>Bring your audience in</strong><p>Share this link. They can respond from any device.</p></div></div>
+          <div class="share-input-group"><label class="sr-only" for="audience-link">Audience link</label><input id="audience-link" readonly><button id="copy-audience" class="button primary" type="button">Copy link</button><a id="open-audience" class="icon-button" target="_blank" rel="noopener noreferrer" aria-label="Open audience page in a new tab">&#8599;</a></div>
+        </section>
+        <p id="network-note" class="notice" hidden>This link uses localhost and only works on this computer. For phones or other computers, open this dashboard using your computer's network IP address, then copy the audience link again. Remote audiences need a hosted HTTPS address.</p>
+        <p class="private-link-note">Your dashboard URL is your private access key. Bookmark it, but share only the audience link above. <button id="copy-presenter" class="text-button" type="button">Copy private dashboard link</button></p>
+        <p id="share-status" class="sr-only" role="status"></p>
+        <div class="dashboard-layout">
+          <div class="pulse-column">
+            <section class="panel pulse-panel" aria-labelledby="pulse-heading">
+              <div class="panel-heading"><div><h2 id="pulse-heading">The room, right now</h2><p>One latest signal per audience member</p></div><span class="section-tag">LIVE PULSE</span></div>
+              <div class="signal-stats">
+                <article class="stat-card green-stat"><div class="stat-label"><span class="signal-icon green-icon" aria-hidden="true">&#10003;</span><h3>All clear</h3></div><strong id="green-count" class="stat-number">0</strong><div class="stat-bottom"><span>Keep moving</span><span id="green-percent">0%</span></div></article>
+                <article class="stat-card yellow-stat"><div class="stat-label"><span class="signal-icon yellow-icon" aria-hidden="true">?</span><h3>Explain more</h3></div><strong id="yellow-count" class="stat-number">0</strong><div class="stat-bottom"><span>A little more detail</span><span id="yellow-percent">0%</span></div></article>
+                <article class="stat-card red-stat"><div class="stat-label"><span class="signal-icon red-icon" aria-hidden="true">!</span><h3>Feeling lost</h3></div><strong id="red-count" class="stat-number">0</strong><div class="stat-bottom"><span>Let's revisit</span><span id="red-percent">0%</span></div></article>
+              </div>
+              <div class="distribution" aria-hidden="true"><progress id="green-bar" class="green-bar" max="100" value="0"></progress><progress id="yellow-bar" class="yellow-bar" max="100" value="0"></progress><progress id="red-bar" class="red-bar" max="100" value="0"></progress></div>
+              <div class="pulse-summary"><span><strong id="response-count">0</strong> signals received</span><span><strong id="participant-count">0</strong> participants have responded</span></div>
+              <div id="pulse-insight" class="insight" role="status">Your room is ready. Share the link to get the first signal.</div>
+            </section>
+            <aside class="presenter-tip"><span aria-hidden="true">&#10038;</span><div><strong>Make it easy to be honest.</strong><p>Let your audience know they can change their signal anytime. A yellow or red light is an invitation to connect, not a score.</p></div></aside>
+          </div>
+          <section class="panel feedback-panel" aria-labelledby="feedback-heading">
+            <div class="panel-heading"><div><h2 id="feedback-heading">From the audience</h2><p>Anonymous thoughts, in their own words</p></div><span id="feedback-count" class="count-badge">0</span></div>
+            <p id="feedback-announcement" class="sr-only" role="status"></p>
+            <div id="feedback-list" class="feedback-list"></div>
+            <div id="feedback-empty" class="empty-state"><span aria-hidden="true">&#8220;</span><h3>A space for their thoughts.</h3><p>Questions, ideas, and aha moments will appear here as they come in.</p></div>
+            <div class="feedback-footer"><span class="tiny-dot"></span>Newest first &middot; Updates every 2 seconds</div>
+          </section>
+        </div>
+        <p id="last-updated" class="last-updated"></p>
+      </section>
+
+      <section id="audience-view" class="view audience-layout" hidden>
+        <div class="audience-heading"><p class="eyebrow">YOU'RE PART OF THE CONVERSATION</p><h1 id="audience-title" class="page-title">Loading presentation...</h1><p class="subtitle">A quick signal makes a big difference.</p><span id="audience-connection" class="status-pill" role="status">Connecting</span></div>
+        <div id="closed-notice" class="notice" role="status" hidden>This presentation has ended. Thanks for being part of it!</div>
+        <section class="panel audience-signals" aria-labelledby="signal-heading">
+          <div class="panel-heading"><div><h2 id="signal-heading">How's it going?</h2><p>Choose what feels right. Change it anytime.</p></div><span class="section-tag">YOUR SIGNAL</span></div>
+          <div id="signal-buttons" class="signal-choices" role="group" aria-label="Your current understanding">
+            <button type="button" class="signal-choice green-choice" data-signal="green" aria-pressed="false" disabled><span class="signal-icon green-icon" aria-hidden="true">&#10003;</span><span class="choice-copy"><strong>Everything is clear</strong><span>Keep moving. I'm with you.</span></span><span class="selection-indicator" aria-hidden="true"></span></button>
+            <button type="button" class="signal-choice yellow-choice" data-signal="yellow" aria-pressed="false" disabled><span class="signal-icon yellow-icon" aria-hidden="true">?</span><span class="choice-copy"><strong>Can you explain further?</strong><span>A little more detail would help.</span></span><span class="selection-indicator" aria-hidden="true"></span></button>
+            <button type="button" class="signal-choice red-choice" data-signal="red" aria-pressed="false" disabled><span class="signal-icon red-icon" aria-hidden="true">!</span><span class="choice-copy"><strong>I'm confused</strong><span>Let's take another look at this.</span></span><span class="selection-indicator" aria-hidden="true"></span></button>
+          </div>
+          <p id="signal-status" class="form-status" role="status">Your response is anonymous to the presenter.</p>
+        </section>
+        <section class="panel audience-feedback" aria-labelledby="message-heading">
+          <div class="panel-heading"><div><h2 id="message-heading">Something on your mind?</h2><p>A question, an idea, or something that clicked.</p></div><span class="section-tag">OPTIONAL</span></div>
+          <form id="feedback-form">
+            <label class="sr-only" for="feedback-message">Anonymous feedback</label>
+            <textarea id="feedback-message" name="feedback" rows="4" maxlength="1000" placeholder="I'd love an example of..." required disabled></textarea>
+            <div class="message-actions"><span id="character-count">0 / 1,000</span><button id="send-feedback" class="button primary" type="submit" disabled>Send feedback <span aria-hidden="true">&#8594;</span></button></div>
+            <p id="feedback-status" class="form-status" role="status"></p>
+          </form>
+        </section>
+        <p class="audience-privacy"><span aria-hidden="true">&#9671;</span> No name attached. Your presenter sees the room's overall signals and anonymous messages. Avoid sharing personal or sensitive information.</p>
+      </section>
+      <section id="not-found-view" class="view not-found" hidden><h1>That link doesn't look right.</h1><p>Ask your presenter for the audience link, or start a new presentation.</p><a class="button primary" href="/">Back to home</a></section>
+    </main>
+    <footer class="site-footer"><span>RoomPulse <span class="footer-dot">&middot;</span> Better presentations start with listening.</span><span>No sign-ups. More connection.</span></footer>
+    <dialog id="end-dialog"><form method="dialog"><span class="section-tag">END PRESENTATION</span><h2>Ready to wrap up?</h2><p>Your results will stay here, but the audience will no longer be able to send signals or feedback. This can't be undone.</p><div class="dialog-actions"><button class="button quiet" value="cancel">Keep it going</button><button class="button danger" value="confirm">End session</button></div></form></dialog>
+  </body>
+</html>
